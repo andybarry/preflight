@@ -36,6 +36,21 @@ def getValue(topic):
     return stdout.split('\n')[1].split(',')[1]
   except:
     return ""
+    
+######################################################################
+def getMultiValue(topic):
+  """Returns the latest value of a given message.
+  
+  This is useful for checking things like battery levels, status messages, etc.
+
+  Example:
+    preflight.check('Battery Level', lambda: preflight.getValue("/robotstatus/battery_voltage"), lambda x: float(x) > 11.0)
+  """
+  stdout = __runcommand("rostopic  echo " + topic + " -n 1 -p")
+  try:
+    return stdout.split('\n')[1].split(',')
+  except:
+    return ""
 
 ######################################################################
 def getParam(param):
@@ -105,4 +120,8 @@ def check(name, value_lambda, test_lambda):
   else:
     print FAIL,
 
-  print ' (' + str(val) + ')'
+  if (len(str(val)) > 50):
+      var = str(val)
+      print ' (' + var[0:50] + '...)'
+  else:
+    print ' (' + str(val) + ')'
